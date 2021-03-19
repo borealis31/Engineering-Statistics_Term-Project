@@ -1,3 +1,4 @@
+%DEPRECATED FUNCTION — SEE book.m FOR REVAMPED SET-UP
 function Stats = Plain_Text_Parsing(file_name)
 %Parse .txt file into text_lines then combine into a character array
 text_lines = regexp(fileread(file_name), '\r?\n', 'split');
