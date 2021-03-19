@@ -12,6 +12,7 @@ classdef book
         min
         longest
         shortest
+        file
     end
     
     methods
@@ -84,7 +85,9 @@ classdef book
             %Spit out longest and shortest word
             obj.longest = words{word_lens == obj.max};
             obj.shortest = words{word_lens == obj.min};
+            obj.file = file_name;
             clear words word_lens word_lens_adj;
+            
             
             %Stats = {num_words; mean_len; var_len; std_len; max_len; min_len;...
             %    longest_word; shortest_word};
