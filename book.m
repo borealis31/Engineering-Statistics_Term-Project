@@ -13,6 +13,7 @@ classdef book
         longest
         shortest
         file
+        %debug
     end
     
     methods
@@ -27,6 +28,7 @@ classdef book
                 end
             end
             text = lower(horzcat(text_lines{:}));
+            %debug = regexprep(text,'[abcdefghijklmnopqrstuvwxyz''''""""`;:,. 1234567890]','')
             clear idx_line temp text_lines;
             
             %Detect and replace -- (2 hyphens used in place of an em-dash) with a space
