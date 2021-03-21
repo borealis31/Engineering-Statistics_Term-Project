@@ -77,7 +77,7 @@ classdef book
             
             %Store length of each word in parallel word_lens array
             %word_lens = zeros([1,numel(words)]);
-            word_lens = cellfun(@numel, words); %More efficient process
+            word_lens = cellfun(@numel, words);
             %for idx_txt = 1:numel(words)
             %    temp = words{idx_txt};
             %    word_lens(idx_txt) = numel(temp);
