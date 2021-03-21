@@ -12,7 +12,8 @@ classdef book
         min
         longest
         shortest
-        file
+        file_path
+        book_title
         %debug
     end
     
@@ -22,7 +23,7 @@ classdef book
     end
     
     methods
-        function obj = book(file_name)
+        function obj = book(file_name, title)
             %Parse .txt file into text_lines then combine into a character array
             text_lines = regexp(fileread(file_name), '\r?\n', 'split');
             for idx_line = 1:numel(text_lines)-1
@@ -57,7 +58,7 @@ classdef book
 
             
             %Remove 0 length words
-            obj.word_lens_adj = word_lens(word_lens ~= 0);
+            obj.word_lens_adj = word_lens(word_lens ~= 0);            
             
             %Store statistical observations of word lengths & words of interest
             obj.num_words = numel(obj.word_lens_adj);
@@ -70,18 +71,40 @@ classdef book
             obj.min = min(obj.word_lens_adj);
             obj.longest = words{word_lens == obj.max};
             obj.shortest = words{word_lens == obj.min};
-            obj.file = file_name;
+            obj.file_path = file_name;
+            obj.book_title = title;
             obj.stored_words = words;
             clear words word_lens word_lens_adj;
         end
-        function vis(obj)
+        
+        function vis_hist(obj)
             histogram(obj.word_lens_adj)
+            title(obj.book_title)
             hold on
             xline(obj.mu,'r','Mean')
             %xline(obj.mode,'y','Mode') unnecessary given the nature of a
             %histogram
             xline(obj.med,'b','Median')
+            xlabel('Word Length')
+            ylabel('Frequency')
             hold off
+        end
+        
+        function vis_box(obj)
+            boxchart(obj.word_lens_adj,'Orientation','horizontal','MarkerStyle','none')
+            title(obj.book_title)
+            hold on
+            %plot(obj.mu,1,'or')
+            xlabel('Word Length')
+            hold off
+        end
+        
+        function vis_all(obj)
+            tiledlayout(2,2)
+            nexttile([1 2])
+            obj.vis_hist
+            nexttile([1 2])
+            obj.vis_box
         end
     end
 end
