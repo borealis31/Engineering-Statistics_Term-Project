@@ -4,6 +4,8 @@ classdef book
     properties
         num_words
         mu
+        mode
+        med
         var
         std
         max
@@ -12,6 +14,11 @@ classdef book
         shortest
         file
         %debug
+    end
+    
+    properties (Access = private)
+        stored_words
+        word_lens_adj
     end
     
     methods
@@ -50,20 +57,31 @@ classdef book
 
             
             %Remove 0 length words
-            word_lens_adj = word_lens(word_lens ~= 0);
+            obj.word_lens_adj = word_lens(word_lens ~= 0);
             
             %Store statistical observations of word lengths & words of interest
-            obj.num_words = numel(word_lens_adj);
-            obj.mu = mean(word_lens_adj);
-            obj.std = std(word_lens_adj);
+            obj.num_words = numel(obj.word_lens_adj);
+            obj.mu = mean(obj.word_lens_adj);
+            obj.mode = mode(obj.word_lens_adj);
+            obj.med = median(obj.word_lens_adj,'all');
+            obj.std = std(obj.word_lens_adj);
             obj.var = (obj.std)^2;
-            obj.max = max(word_lens_adj);
-            obj.min = min(word_lens_adj);
+            obj.max = max(obj.word_lens_adj);
+            obj.min = min(obj.word_lens_adj);
             obj.longest = words{word_lens == obj.max};
             obj.shortest = words{word_lens == obj.min};
             obj.file = file_name;
+            obj.stored_words = words;
             clear words word_lens word_lens_adj;
-            
+        end
+        function vis(obj)
+            histogram(obj.word_lens_adj)
+            hold on
+            xline(obj.mu,'r','Mean')
+            %xline(obj.mode,'y','Mode') unnecessary given the nature of a
+            %histogram
+            xline(obj.med,'b','Median')
+            hold off
         end
     end
 end
