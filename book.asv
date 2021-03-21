@@ -41,19 +41,18 @@ classdef book
             %    end
             %end
             %text(idxes_ems) = ' ';
-            text = regexprep(text, '--', ' '); %More efficient process
             %clear idx_ems idxes_ems ems;
-            
+           
             
             %Replace underscores, em-dashes, and all numbers with spaces
-            
             %mass_comp = (text == '_')+(text == '—')+(text == '1')+(text == '2') ...
             %    +(text == '3')+(text == '4')+(text == '5')+(text == '6') ...
             %    +(text == '7')+(text == '8')+(text == '9')+(text == '0');
             %text(logical(mass_comp)) = ' ';
-            text = regexprep(text,'[_—1234567890]',' '); %More efficient process
             %clear mass_comp;
             
+            text = regexprep(text,'[_—1234567890]',' '); %More efficient process for above
+
             
             %Separate into words based on spaces inbetween each word
             words = split(text)';
@@ -68,21 +67,23 @@ classdef book
                 %    + (temp == ';') + (temp == '-') + (temp == '(') + (temp == ')') ...
                 %    + (temp == '`') + (temp == '’') + (temp == '”') + (temp == '“');
                 %temp(logical(comp)) = [];
-            %    temp = regexprep(temp, '[,''''".?!&:;-()`’”“]',''); %More efficient process
             %    words{idx_words} = temp;
             %end
-            words = regexprep(words, '[,''''".?!&:;-()`’”“]','');
             %clear idx_words temp comp;
             
+            words = regexprep(words, '[,''''".?!&:;-()`’”“]',''); %More efficient process for above
+
             
             %Store length of each word in parallel word_lens array
             %word_lens = zeros([1,numel(words)]);
-            word_lens = cellfun(@numel, words);
             %for idx_txt = 1:numel(words)
             %    temp = words{idx_txt};
             %    word_lens(idx_txt) = numel(temp);
             %end
             %clear idx_txt temp;
+            
+            word_lens = cellfun(@numel, words); %More efficient process for above
+
             
             %Remove 0 length words
             word_lens_adj = word_lens(word_lens ~= 0);

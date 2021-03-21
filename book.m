@@ -1,7 +1,5 @@
 classdef book
     %Book: contains all properties of book type
-    %num_words mean_len var_len std_len max_len min_len
-    %longest_word shortest_word
     
     properties
         num_words
@@ -28,93 +26,44 @@ classdef book
                 end
             end
             text = lower(horzcat(text_lines{:}));
-            %debug = regexprep(text,'[abcdefghijklmnopqrstuvwxyz''''""""`’;:,. 1234567890”“]','')
             clear idx_line temp text_lines;
             
             
-            %Detect and replace -- (2 hyphens used in place of an em-dash) with a space
-            %ems = find(text == '-');
-            %idxes_ems = [];
-            %for idx_ems = 1:numel(ems)-1
-            %    if text(ems(idx_ems)+1) == '-'
-            %        idxes_ems(numel(idxes_ems)+1) = ems(idx_ems);
-            %    end
-            %end
-            %text(idxes_ems) = ' ';
-            text = regexprep(text, '--', ' '); %More efficient process
-            %clear idx_ems idxes_ems ems;
+            %debug = regexprep(text,'[abcdefghijklmnopqrstuvwxyz''''""""`’‘;:,. 1234567890”“?!_--—()]','')
+           
             
-            
-            %Replace underscores, em-dashes, and all numbers with spaces
-            
-            %mass_comp = (text == '_')+(text == '—')+(text == '1')+(text == '2') ...
-            %    +(text == '3')+(text == '4')+(text == '5')+(text == '6') ...
-            %    +(text == '7')+(text == '8')+(text == '9')+(text == '0');
-            %text(logical(mass_comp)) = ' ';
-            text = regexprep(text,'[_—1234567890]',' '); %More efficient process
-            %clear mass_comp;
-            
+            %Replace underscores, em-dashes (including faux em-dashes), and all numbers with spaces
+            text = regexprep(text,{'[_—1234567890]','--'},' ');
+
             
             %Separate into words based on spaces inbetween each word
             words = split(text)';
             clear text;
             
             
-            %for idx_words = 1:numel(words)
-            %    temp = words{idx_words};
-                %Remove symbols that are non-impacting
-                %comp = (temp == ',') + (temp == '''') + (temp == '"') + (temp == '.') ...
-                %    + (temp == '?') + (temp == '!') + (temp == '&') + (temp == ':') ...
-                %    + (temp == ';') + (temp == '-') + (temp == '(') + (temp == ')') ...
-                %    + (temp == '`') + (temp == '’') + (temp == '”') + (temp == '“');
-                %temp(logical(comp)) = [];
-            %    temp = regexprep(temp, '[,''''".?!&:;-()`’”“]',''); %More efficient process
-            %    words{idx_words} = temp;
-            %end
-            words = regexprep(words, '[,''''".?!&:;-()`’”“]','');
-            %clear idx_words temp comp;
-            
+            %Remove symbols that are non-impacting
+            words = regexprep(words, '[,''''".?!&:;-()`‘’”“*]','');
+
             
             %Store length of each word in parallel word_lens array
-            %word_lens = zeros([1,numel(words)]);
-            word_lens = cellfun(@numel, words); %More efficient process
-            %for idx_txt = 1:numel(words)
-            %    temp = words{idx_txt};
-            %    word_lens(idx_txt) = numel(temp);
-            %end
-            %clear idx_txt temp;
+            word_lens = cellfun(@numel, words);
+
             
             %Remove 0 length words
             word_lens_adj = word_lens(word_lens ~= 0);
             
-            %Calculate statistical observations of word lengths
+            %Store statistical observations of word lengths & words of interest
             obj.num_words = numel(word_lens_adj);
             obj.mu = mean(word_lens_adj);
             obj.std = std(word_lens_adj);
             obj.var = (obj.std)^2;
             obj.max = max(word_lens_adj);
             obj.min = min(word_lens_adj);
-            
-            %Spit out longest and shortest word
             obj.longest = words{word_lens == obj.max};
             obj.shortest = words{word_lens == obj.min};
             obj.file = file_name;
             clear words word_lens word_lens_adj;
             
-            
-            %Stats = {num_words; mean_len; var_len; std_len; max_len; min_len;...
-            %    longest_word; shortest_word};
-            
-            %Store vals from input cell array to properties
-            %obj.sample_size = Stats{1};
-            %obj.mu = Stats{2};
-            %obj.var = Stats{3};
-            %obj.std = Stats{4};
-            %obj.max = Stats{5};
-            %obj.min = Stats{6};
-            %obj.longest = Stats{7};
-            %obj.shortest = Stats{8};
-            %Removed stats cell array going from function to object
         end
     end
 end
