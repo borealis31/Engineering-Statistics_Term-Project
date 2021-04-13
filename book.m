@@ -14,16 +14,17 @@ classdef book
         shortest
         file_path
         book_title
+        author
+        word_lens_adj
         %debug
     end
     
     properties (Access = private)
         stored_words
-        word_lens_adj
     end
     
     methods
-        function obj = book(file_name, title)
+        function obj = book(file_name, title, writer)
             %Parse .txt file into text_lines then combine into a character array
             text_lines = regexp(fileread(file_name), '\r?\n', 'split');
             for idx_line = 1:numel(text_lines)-1
@@ -41,7 +42,7 @@ classdef book
            
             
             %Replace underscores, em-dashes (including faux em-dashes), and all numbers with spaces
-            text = regexprep(text,{'[_—1234567890]','--'},' ');
+            text = regexprep(text,{'[_—1234567890]','--','[',']','{','}'},' ');
 
             
             %Separate into words based on spaces inbetween each word
@@ -73,8 +74,9 @@ classdef book
             obj.shortest = words{word_lens == obj.min};
             obj.file_path = file_name;
             obj.book_title = title;
+            obj.author = writer;
             obj.stored_words = words;
-            clear words word_lens word_lens_adj;
+            clear words word_lens;
         end
         
         function vis_hist(obj)
